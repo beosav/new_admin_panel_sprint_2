@@ -1,0 +1,127 @@
+openapi: 3.0.0
+info:
+  title: Movies ListApi
+  version: v1
+servers:
+  - url: http://127.0.0.1:8000
+paths:
+  /api/v1/movies/:
+    get:
+      description: ""
+      parameters:
+        - name: page
+          in: query
+          description: Номер страницы
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    description: Количество объектов
+                    example: 1000
+                  total_pages:
+                    type: integer
+                    description: Количество страниц
+                    example: 20
+                  prev:
+                    type: integer
+                    nullable: true
+                    description: Номер предыдущей страницы
+                    example: 1
+                  next:
+                    type: integer
+                    nullable: true
+                    description: Номер следующей страницы
+                    example: 2
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Movie"
+  
+  /api/v1/movies/{id}:
+    get:
+      description: ""
+      parameters:
+        - in: path
+          name: id  
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: ID кинопроизведения
+        
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Movie"
+components:
+  schemas:
+    Movie:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID 
+        title:
+          type: string
+          description: Название 
+          example: Crescent Star
+        description:
+          type: string
+          description: Описание  
+          example: In 1944, the Germans began rounding up the Jews of Rhodes.
+        creation_date:
+          type: string
+          format: date
+          description: Дата создания
+        rating:
+          type: number
+          format: float
+          description: Рейтинг
+          example: 7.9
+        type:
+          type: string
+          description: Тип
+          example: movie
+        genres:
+          type: array
+          description: Список жанров
+          example: [Drama, Short]
+          items:
+            type: string
+            description: Название жанра
+        actors:
+          type: array
+          description: Список актёров
+          example: [Darrell Geer, Michael Bond]
+          items:
+            type: string
+            description: Имя актёра
+        directors:
+          type: array
+          description: Список режиссеров
+          example: [Turgut Turk Adiguzel]
+          items:
+            type: string
+            description: Имя режиссера
+            example: Turgut Turk Adiguzel
+        writers:
+          type: array
+          description: Список сценаристов
+          example: [Turgut Turk Adiguzel]
+          items:
+            type: string
+            description: Имя сценариста
+            example: Turgut Turk Adiguzel                

@@ -1,0 +1,419 @@
+{
+	"info": {
+		"_postman_id": "e7e1f1ae-426d-49e3-8a51-51e7f63dbbb6",
+		"name": "movies API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "movies",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Запрос первой страницы\", function () {",
+							"     pm.response.to.be.ok;",
+							"     pm.response.to.be.withBody;",
+							"     pm.response.to.be.json;",
+							"     var jsonData = pm.response.json();",
+							"     var count = jsonData.count",
+							"     pm.expect(Math.ceil(count/50)).to.eql(jsonData.total_pages);",
+							"     pm.expect(jsonData.prev).to.eql(null);",
+							"     pm.expect(jsonData.next).to.eql(2);",
+							"     postman.setEnvironmentVariable(\"movieUuid\", jsonData.results[0].id);",
+							"});",
+							"var Ajv = require('ajv'),",
+							"    ajv = new Ajv({ logger: console, allErrors: true }),",
+							"    schema = {",
+							"    \"type\": \"object\",",
+							"    \"required\":[",
+							"        \"count\",",
+							"        \"total_pages\",",
+							"        \"prev\",",
+							"        \"next\",",
+							"        \"results\"",
+							"    ],",
+							"    \"properties\": {",
+							"        \"count\": {\"type\": \"integer\"},",
+							"        \"total_pages\": {\"type\": \"integer\"},",
+							"        \"prev\": {\"type\": \"null\"},",
+							"        \"next\": {\"type\": \"integer\"},",
+							"        \"results\": {\"type\": \"array\",",
+							"            \"items\": {\"type\": \"object\",",
+							"                     \"required\":[",
+							"                        \"id\",",
+							"                        \"title\",",
+							"                        \"description\",",
+							"                        \"creation_date\",",
+							"                        \"rating\",",
+							"                        \"type\",",
+							"                        \"genres\",",
+							"                        \"actors\",",
+							"                        \"directors\",",
+							"                        \"writers\",",
+							"                     ],",
+							"                     \"properties\": {",
+							"                        \"id\": {\"type\": \"string\", \"format\": \"uuid\"},",
+							"                        \"title\": {\"type\": \"string\"},",
+							"                        \"description\": {\"type\": [\"string\", \"null\"]},",
+							"                        \"creation_date\": {\"type\": [\"string\", \"null\"]},",
+							"                        \"rating\": {\"type\": \"number\"},",
+							"                        \"type\": {\"type\": \"string\"},",
+							"                        \"genres\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}},",
+							"                        \"actors\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}},",
+							"                        \"directors\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}},",
+							"                        \"writers\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}},",
+							"                     }",
+							"            }",
+							"        }",
+							"    }",
+							"};",
+							"",
+							"pm.test('Проверка схемы', function () {",
+							"    pm.expect(ajv.validate(schema, pm.response.json()), JSON.stringify(ajv.errors)).to.be.true;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:8000/api/v1/movies",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"v1",
+						"movies"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "movies?page=2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Запрос второй страницы\", function () {",
+							"     pm.response.to.be.ok;",
+							"     pm.response.to.be.withBody;",
+							"     pm.response.to.be.json;",
+							"     var jsonData = pm.response.json();",
+							"     var count = jsonData.count",
+							"     pm.expect(Math.ceil(count/50)).to.eql(jsonData.total_pages);",
+							"     pm.expect(jsonData.prev).to.eql(1);",
+							"     pm.expect(jsonData.next).to.eql(3);",
+							"});",
+							"var Ajv = require('ajv'),",
+							"    ajv = new Ajv({ logger: console, allErrors: true }),",
+							"    schema = {",
+							"    \"type\": \"object\",",
+							"    \"required\":[",
+							"        \"count\",",
+							"        \"total_pages\",",
+							"        \"prev\",",
+							"        \"next\",",
+							"        \"results\"",
+							"    ],",
+							"    \"properties\": {",
+							"        \"count\": {\"type\": \"integer\"},",
+							"        \"total_pages\": {\"type\": \"integer\"},",
+							"        \"prev\": {\"type\": \"integer\"},",
+							"        \"next\": {\"type\": \"integer\"},",
+							"        \"results\": {\"type\": \"array\",",
+							"            \"items\": {\"type\": \"object\",",
+							"                     \"required\":[",
+							"                        \"id\",",
+							"                        \"title\",",
+							"                        \"description\",",
+							"                        \"creation_date\",",
+							"                        \"rating\",",
+							"                        \"type\",",
+							"                        \"genres\",",
+							"                        \"actors\",",
+							"                        \"directors\",",
+							"                        \"writers\",",
+							"                     ],",
+							"                     \"properties\": {",
+							"                        \"id\": {\"type\": \"string\", \"format\": \"uuid\"},",
+							"                        \"title\": {\"type\": \"string\"},",
+							"                        \"description\": {\"type\": [\"string\", \"null\"]},",
+							"                        \"creation_date\": {\"type\": [\"string\", \"null\"]},",
+							"                        \"rating\": {\"type\": \"number\"},",
+							"                        \"type\": {\"type\": \"string\"},",
+							"                        \"genres\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}},",
+							"                        \"actors\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}},",
+							"                        \"directors\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}},",
+							"                        \"writers\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}},",
+							"                     }",
+							"            }",
+							"        }",
+							"    }",
+							"};",
+							"",
+							"pm.test('Проверка схемы', function () {",
+							"    pm.expect(ajv.validate(schema, pm.response.json()), JSON.stringify(ajv.errors)).to.be.true;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:8000/api/v1/movies?page=2",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"v1",
+						"movies"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "movies?page=last",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Запрос последней страницы\", function () {",
+							"     pm.response.to.be.ok;",
+							"     pm.response.to.be.withBody;",
+							"     pm.response.to.be.json;",
+							"     var jsonData = pm.response.json(),",
+							"         count = jsonData.count,",
+							"         pagesCount = Math.ceil(count/50);",
+							"     pm.expect(pagesCount).to.eql(jsonData.total_pages);",
+							"     pm.expect(jsonData.prev).to.eql(pagesCount-1);",
+							"     pm.expect(jsonData.next).to.eql(null);",
+							"});",
+							"var Ajv = require('ajv'),",
+							"    ajv = new Ajv({ logger: console, allErrors: true }),",
+							"    schema = {",
+							"    \"type\": \"object\",",
+							"    \"required\":[",
+							"        \"count\",",
+							"        \"total_pages\",",
+							"        \"prev\",",
+							"        \"next\",",
+							"        \"results\"",
+							"    ],",
+							"    \"properties\": {",
+							"        \"count\": {\"type\": \"integer\"},",
+							"        \"total_pages\": {\"type\": \"integer\"},",
+							"        \"prev\": {\"type\": \"integer\"},",
+							"        \"next\": {\"type\": \"null\"},",
+							"        \"results\": {\"type\": \"array\",",
+							"            \"items\": {\"type\": \"object\",",
+							"                     \"required\":[",
+							"                        \"id\",",
+							"                        \"title\",",
+							"                        \"description\",",
+							"                        \"creation_date\",",
+							"                        \"rating\",",
+							"                        \"type\",",
+							"                        \"genres\",",
+							"                        \"actors\",",
+							"                        \"directors\",",
+							"                        \"writers\",",
+							"                     ],",
+							"                     \"properties\": {",
+							"                        \"id\": {\"type\": \"string\", \"format\": \"uuid\"},",
+							"                        \"title\": {\"type\": \"string\"},",
+							"                        \"description\": {\"type\": [\"string\", \"null\"]},",
+							"                        \"creation_date\": {\"type\": [\"string\", \"null\"]},",
+							"                        \"rating\": {\"type\": \"number\"},",
+							"                        \"type\": {\"type\": \"string\"},",
+							"                        \"genres\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}},",
+							"                        \"actors\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}},",
+							"                        \"directors\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}},",
+							"                        \"writers\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}},",
+							"                     }",
+							"            }",
+							"        }",
+							"    }",
+							"};",
+							"",
+							"pm.test('Проверка схемы', function () {",
+							"    pm.expect(ajv.validate(schema, pm.response.json()), JSON.stringify(ajv.errors)).to.be.true;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:8000/api/v1/movies?page=last",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"v1",
+						"movies"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "last"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "movies/uuid/",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Установка UUID\", function () {",
+							"    pm.sendRequest(\"127.0.0.1:8000/api/v1/movies/\", function (err, response) {",
+							"      var jsonData = response.json();",
+							"      postman.setEnvironmentVariable(\"movieUuid\", jsonData.results[0].id);",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"Запрос фильма по UUID\", function () {",
+							"     pm.response.to.be.ok;",
+							"     pm.response.to.be.withBody;",
+							"     pm.response.to.be.json;",
+							"});",
+							"",
+							"var Ajv = require('ajv'),",
+							"    ajv = new Ajv({ logger: console, allErrors: true }),",
+							"    schema = {",
+							"        \"type\": \"object\",",
+							"        \"required\":[",
+							"            \"id\",",
+							"            \"title\",",
+							"            \"description\",",
+							"            \"creation_date\",",
+							"            \"rating\",",
+							"            \"type\",",
+							"            \"genres\",",
+							"            \"actors\",",
+							"            \"directors\",",
+							"            \"writers\",",
+							"        ],",
+							"        \"properties\": {",
+							"            \"id\": {\"type\": \"string\", \"format\": \"uuid\"},",
+							"            \"title\": {\"type\": \"string\"},",
+							"            \"description\": {\"type\": [\"string\", \"null\"]},",
+							"            \"creation_date\": {\"type\": [\"string\", \"null\"]},",
+							"            \"rating\": {\"type\": \"number\"},",
+							"            \"type\": {\"type\": \"string\"},",
+							"            \"genres\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}},",
+							"            \"actors\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}},",
+							"            \"directors\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}},",
+							"            \"writers\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}},",
+							"            }",
+							"        };",
+							"",
+							"pm.test('Проверка схемы', function () {",
+							"    pm.expect(ajv.validate(schema, pm.response.json()), JSON.stringify(ajv.errors)).to.be.true;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:8000/api/v1/movies/{{movieUuid}}",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"v1",
+						"movies",
+						"{{movieUuid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "movies/wrongUuid/",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Запрос фильма по несуществующему UUID\", function () {",
+							"     pm.response.to.be.notFound;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:8000/api/v1/movies/0000",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"v1",
+						"movies",
+						"0000"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
