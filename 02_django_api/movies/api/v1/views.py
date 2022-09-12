@@ -9,6 +9,14 @@ from movies.models import Filmwork, RoleType as PersonRoleChoices
 class MoviesApiMixin:
     model = Filmwork
     http_method_names = ['get']
+    
+    @staticmethod
+    def get_person_aggregation(role: PersonRoleChoices):
+        return ArrayAgg(
+            'personfilmwork__role',
+            filter=Q(personfilmwork__role=str(role)),
+            distinct=True
+        )    
 
     def get_queryset(self):
         film_works = (
@@ -22,21 +30,25 @@ class MoviesApiMixin:
                 'genres__name',
                 distinct=True
             ),
-            actors=ArrayAgg(
-                'persons__full_name',
-                filter=Q(personfilmwork__role=PersonRoleChoices.ACTOR),
-                distinct=True
-            ),
-            directors=ArrayAgg(
-                'persons__full_name',
-                filter=Q(personfilmwork__role=PersonRoleChoices.DIRECTOR),
-                distinct=True
-            ),
-            writers=ArrayAgg(
-                'persons__full_name',
-                filter=Q(personfilmwork__role=PersonRoleChoices.WRITER),
-                distinct=True
-            )
+
+            actors = MoviesApiMixin.get_person_aggregation(PersonRoleChoices.ACTOR),
+            directors = MoviesApiMixin.get_person_aggregation(PersonRoleChoices.DIRECTOR),
+            writers = MoviesApiMixin.get_person_aggregation(PersonRoleChoices.WRITER)
+            # actors=ArrayAgg(
+            #     'persons__full_name',
+            #     filter=Q(personfilmwork__role=PersonRoleChoices.ACTOR),
+            #     distinct=True
+            # ),
+            # directors=ArrayAgg(
+            #     'persons__full_name',
+            #     filter=Q(personfilmwork__role=PersonRoleChoices.DIRECTOR),
+            #     distinct=True
+            # ),
+            # writers=ArrayAgg(
+            #     'persons__full_name',
+            #     filter=Q(personfilmwork__role=PersonRoleChoices.WRITER),
+            #     distinct=True
+            # )
         )
         return queryset
 

@@ -1,5 +1,5 @@
 # Укажите необходимую версию python
-FROM python:3.10
+FROM python:3.7-slim
 
 # Выберите папку, в которой будут размещаться файлы проекта внутри контейнера 
 WORKDIR /
@@ -13,28 +13,9 @@ COPY . .
 
 # Установите зависимости
 RUN  pip install --upgrade pip \
-     && pip install -r requirements.txt
-
-# RUN  python manage.py migrate
-# RUN  python manage.py collectstatic
-
-
-# python manage.py flush --no-input
-# RUN sed -i 's/\r$//g' entrypoint.sh && chmod +x entrypoint.sh
-# RUN python manage.py migrate
-# RUN python manage.py collectstatic --no-input
-# python manage.py create_movies
-
+     && pip install --no-cache-dir -r requirements.txt
 
 # Укажите порт, на котором приложение будет доступно внутри Docker-сети
 EXPOSE 8000
 
-# CMD python manage.py migrate
-# Укажите, как запускать ваш сервис
-# ENTRYPOINT ["python", "manage.py", "runserver", "0.0.0.0:8000"]
-# ENTRYPOINT ["gunicorn", "config.wsgi:application", "--bind", "0:8000" ]
-
-
-# CMD python manage.py migrate && python manage.py collectstatic --noinput && gunicorn --bind 0.0.0.0:8000 config.wsgi
 CMD python manage.py collectstatic --noinput && python manage.py migrate && python manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'admin@example.com', 'admin')" && gunicorn --bind 0.0.0.0:8000 config.wsgi
-# ENTRYPOINT ["gunicorn", "config.wsgi:application", "--bind", "0:8000" ]
